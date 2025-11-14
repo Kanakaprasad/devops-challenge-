@@ -21,3 +21,13 @@ This repo is intentionally minimal and production-aware (no secrets committed, `
 
 ## Repo structure
 
+devops-challenge/
+├─ .github/
+│ └─ workflows/
+│ └─ auto-merge.yml # Auto-merge workflow (dev -> main)
+├─ server/
+│ ├─ index.js # Express server: /ask-gemini endpoints
+│ ├─ package.json
+│ └─ .env.example
+├─ .gitignore
+└─ README.md
