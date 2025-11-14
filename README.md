@@ -1,33 +1,63 @@
-# Devops-challenge
+# 🚀 Devops-challenge
 
-**Tvara DevOps Interview Challenge** — Node.js backend + GitHub Actions auto-merge workflow.
-
-- **Repo name:** `devops-challenge`  
-- **Author:** Kanakaprasad (KP)  
-- **Stack:** Node.js (Express), GitHub Actions CI
+**Tvara DevOps Interview Challenge**  
+Backend: **Node.js (Express)**  
+CI/CD: **GitHub Actions** (Auto-Merge Workflow)
 
 ---
 
-## Project overview
+## 👤 Author
 
-This repository demonstrates:
-
-- **Task A — Auto-merge workflow (CI):** a GitHub Actions workflow that automatically attempts to merge `dev` → `main` whenever commits are pushed to `dev`. The action creates a temporary branch from `origin/main`, merges `origin/dev` into it, and pushes the merged branch back to `main` if no conflicts exist. If conflicts occur, the job fails and manual resolution is required (safe-by-default).
-- **Task B — Gemini 2.0 Flash integration (API):** a minimal Express backend that forwards prompts to the Google Gemini `gemini-2.0-flash:generateContent` endpoint and returns the generated content. Supports synchronous (waits for response) and asynchronous (job id + polling) modes.
-
-This repo is intentionally minimal and production-aware (no secrets committed, `.env.example` provided).
+- **Name:** Kanakaprasad (KP)  
+- **Repo:** `devops-challenge`  
+- **Stack:** Node.js, Express, GitHub Actions  
 
 ---
 
-## Repo structure
+## 📌 Project Overview
 
+This repository implements both tasks from the Tvara DevOps challenge:
+
+### ✅ **Task A — Auto-Merge Workflow (CI)**  
+A GitHub Actions workflow that automatically merges the `dev` branch → `main` whenever new commits are pushed to `dev`.
+
+Key features:
+
+- Triggers on: `push` to `dev`  
+- Creates a temporary branch from `origin/main`  
+- Attempts to merge `origin/dev` → `tmp-merge`  
+- If merge succeeds → pushes `tmp-merge:main`  
+- If merge fails → workflow stops safely without modifying `main`
+
+This ensures **safe, conflict-free automation**.
+
+---
+
+### ✅ **Task B — Gemini 2.0 Flash API Integration (Backend)**
+
+A minimal backend demonstrating:
+
+- `POST /ask-gemini`  
+  - **Sync mode:** Waits for Google Gemini response  
+  - **Async mode:** Returns a `jobId` immediately; user can poll for status  
+- `GET /ask-gemini/status/:id` — Poll job results  
+- `GET /health` — Simple health check
+
+Supports loading state simulation through async mode.  
+Uses environment variables → no secret leakage.
+
+---
+
+## 📂 Repo Structure
+
+```bash
 devops-challenge/
 ├─ .github/
-│ └─ workflows/
-│ └─ auto-merge.yml # Auto-merge workflow (dev -> main)
+│  └─ workflows/
+│     └─ auto-merge.yml        # Auto-merge workflow (dev → main)
 ├─ server/
-│ ├─ index.js # Express server: /ask-gemini endpoints
-│ ├─ package.json
-│ └─ .env.example
+│  ├─ index.js                 # Express server & /ask-gemini endpoints
+│  ├─ package.json
+│  └─ .env.example             # Example env file
 ├─ .gitignore
 └─ README.md
