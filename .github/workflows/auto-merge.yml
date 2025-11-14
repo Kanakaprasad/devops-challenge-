@@ -11,15 +11,19 @@ jobs:
   auto-merge:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout main
+      - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          ref: main
           fetch-depth: 0
 
-      - name: Fetch dev
+      - name: Show remote branches (debug)
         run: |
-          git fetch origin dev:dev || true
+          git remote -v
+          git branch -av
+
+      - name: Fetch all refs
+        run: |
+          git fetch --all --prune
 
       - name: Attempt merge dev -> main
         id: merge
@@ -27,11 +31,14 @@ jobs:
           set -e
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git fetch origin main:main
-          git fetch origin dev:dev
-          git checkout -b tmp-merge main
-          echo "Merging dev into main (tmp-merge)..."
-          if git merge --no-edit dev; then
+
+          # Create a temporary branch from origin/main (do not fetch into checked-out main)
+          git checkout --detach origin/main
+          git checkout -b tmp-merge
+
+          echo "Merging origin/dev into tmp-merge..."
+          # Merge origin/dev into tmp-merge
+          if git merge --no-edit origin/dev; then
             echo "MERGE_SUCCESS=true" >> $GITHUB_OUTPUT
           else
             echo "Merge failed (conflict)"
@@ -48,7 +55,7 @@ jobs:
       - name: Cleanup local branches
         if: always()
         run: |
-          git checkout main || true
+          git checkout --detach origin/main || true
           git branch -D tmp-merge || true
 
       - name: Result
